@@ -1,3 +1,5 @@
+const { fetch } = window;
+
 import { CLASSNAMES, LEVEL_PROPERTIES, PENALTY_DURATION, SHAKE_DURATION } from '$utils/constants';
 import { formatHumanReadableTime } from '$utils/helpers';
 import { Stopwatch } from '$utils/Stopwatch';
@@ -27,6 +29,8 @@ enum SELECTORS {
   GLOW_TOP_EMBED = '[data-game="glow-top-embed"]',
   PENALTY_OVERLAY = '[data-game="penalty-overlay"]',
   GAME_WINDOW = '[data-game="game-window"]',
+  NAME_ELEMENT = '[data-game="name"]',
+  EMAIL_ELEMENT = '[data-game="email"]',
 }
 
 // GET ELEMENTS
@@ -51,6 +55,12 @@ const tryAgainButton = document.querySelector<HTMLAnchorElement>(SELECTORS.TRY_A
 const glowTopEmbed = document.querySelector<HTMLDivElement>(SELECTORS.GLOW_TOP_EMBED);
 const penaltyOverlay = document.querySelector<HTMLDivElement>(SELECTORS.PENALTY_OVERLAY);
 const gameWindow = document.querySelector<HTMLDivElement>(SELECTORS.GAME_WINDOW);
+const nameEl = document.querySelector<HTMLInputElement>(SELECTORS.NAME_ELEMENT);
+const emailEl = document.querySelector<HTMLInputElement>(SELECTORS.EMAIL_ELEMENT);
+
+if (!nameEl || !emailEl) {
+  throw new Error('Error retrieving name or email elements.');
+}
 
 // LOG THEM JUST FOR DEBUGGING
 // console.log({
@@ -98,27 +108,31 @@ const stopwatch = new Stopwatch(0, timerEl);
 roundEl.textContent = currentLevel.toString().padStart(2, '0');
 hideNextShowSubmit();
 
-for (let i = 1; i <= numLevels; i++) {
-  if (!messageEl || !timerEl) {
-    throw new Error('Message and timer elements are required');
-  }
+function createLevels() {
+  levels.length = 0; // This clears the existing array
 
-  const level = new Level(
-    i, // level number
-    getRandomInt(parseInt(userSelectEls[i - 1].min, 10), parseInt(userSelectEls[i - 1].max, 10)), // target value
-    parseInt(userSelectEls[i - 1].value, 10), // user selection
-    displaySelectEls[i - 1], // element displaying user selection
-    referenceEls[i - 1], // reference element
-    LEVEL_PROPERTIES[i].cssProperty, // target element property
-    LEVEL_PROPERTIES[i].min, // target element unit
-    LEVEL_PROPERTIES[i].max, // target element unit
-    targetEls[i - 1],
-    userSelectEls[i - 1],
-    messageEl,
-    score,
-    i === 7 ? true : false // level 7 score is based on degrees
-  );
-  levels.push(level);
+  for (let i = 1; i <= numLevels; i++) {
+    if (!messageEl || !timerEl) {
+      throw new Error('Message and timer elements are required');
+    }
+
+    const level = new Level(
+      i, // level number
+      getRandomInt(parseInt(userSelectEls[i - 1].min, 10), parseInt(userSelectEls[i - 1].max, 10)), // target value
+      parseInt(userSelectEls[i - 1].value, 10), // user selection
+      displaySelectEls[i - 1], // element displaying user selection
+      referenceEls[i - 1], // reference element
+      LEVEL_PROPERTIES[i].cssProperty, // target element property
+      LEVEL_PROPERTIES[i].min, // target element unit
+      LEVEL_PROPERTIES[i].max, // target element unit
+      targetEls[i - 1],
+      userSelectEls[i - 1],
+      messageEl,
+      score,
+      i === 7 ? true : false // level 7 score is based on degrees
+    );
+    levels.push(level);
+  }
 }
 
 function handleStartGameButtonClicked() {
@@ -130,6 +144,11 @@ function handleStartGameButtonClicked() {
   }
   introEl.style.setProperty('display', 'none');
   gameEl.style.setProperty('display', 'block');
+
+  createLevels();
+  // start playing first level
+  stopwatch.start();
+  levels[currentLevel - 1].play();
 
   const countdown = setInterval(() => {
     const currentCountdown = parseInt(countdownEl.textContent || '3', 10);
@@ -155,6 +174,7 @@ function resetGame() {
   currentLevel = 1;
   simulateClick(tabLinks[0]);
   roundEl.textContent = currentLevel.toString().padStart(2, '0');
+  createLevels();
 }
 
 function gameOver() {
@@ -169,6 +189,17 @@ function gameOver() {
 
   gameEl.style.setProperty('display', 'none');
   endEl.style.setProperty('display', 'block');
+  fetch('https://hooks.zapier.com/hooks/catch/14554026/3my5lpi/', {
+    method: 'POST',
+    body: JSON.stringify({
+      time: stopwatch.getAccurateTime(),
+      name: nameEl.value,
+      email: emailEl.value,
+    }),
+  })
+    .then((response) => response.json())
+    .then((data) => console.log('Success:', data))
+    .catch((error) => console.error('Error:', error));
 }
 
 function handleAnswer(isCorrect: boolean) {
@@ -214,6 +245,12 @@ function handleAnswer(isCorrect: boolean) {
 // EVENT LISTENERS
 startGameButton.addEventListener('click', () => {
   handleStartGameButtonClicked();
+});
+
+document.addEventListener('keydown', (event) => {
+  if (event.key === 'q') {
+    gameOver();
+  }
 });
 
 submitButtons.forEach((button) => {

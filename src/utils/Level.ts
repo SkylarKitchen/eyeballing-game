@@ -100,6 +100,12 @@ export class Level {
 
     return false;
   }
+  getRandomInt(min: number, max: number): number {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+  setTargetValue(min: number, max: number) {
+    this.targetValue = this.getRandomInt(min, max);
+  }
 
   formatPropertyValueToStringForLevel(level: number, value: number): string {
     //({ value });

@@ -29,7 +29,7 @@ export class Stopwatch {
     this.countup = setInterval(() => {
       this.timeElapsed += 1;
       this.timeElement.textContent = formatTime(this.timeElapsed); // update timer display
-    }, 1000); // countup every second
+    }, 1000); // count up every second
   }
 
   stop() {
@@ -44,5 +44,10 @@ export class Stopwatch {
 
   getTime() {
     return this.timeElapsed; // get the elapsed time
+  }
+
+  getAccurateTime() {
+    const secondsAccurate = this.timeElapsed + (performance.now() % 1000) / 1000;
+    return secondsAccurate.toFixed(2);
   }
 }
