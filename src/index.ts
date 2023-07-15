@@ -31,6 +31,7 @@ enum SELECTORS {
   GAME_WINDOW = '[data-game="game-window"]',
   NAME_ELEMENT = '[data-game="name"]',
   EMAIL_ELEMENT = '[data-game="email"]',
+  SOCIAL_CONTENT = '[fs-social-share="content"]',
 }
 
 // GET ELEMENTS
@@ -57,6 +58,7 @@ const penaltyOverlay = document.querySelector<HTMLDivElement>(SELECTORS.PENALTY_
 const gameWindow = document.querySelector<HTMLDivElement>(SELECTORS.GAME_WINDOW);
 const nameEl = document.querySelector<HTMLInputElement>(SELECTORS.NAME_ELEMENT);
 const emailEl = document.querySelector<HTMLInputElement>(SELECTORS.EMAIL_ELEMENT);
+const socialContentEl = document.querySelector(SELECTORS.SOCIAL_CONTENT);
 
 if (!nameEl || !emailEl) {
   throw new Error('Error retrieving name or email elements.');
@@ -175,6 +177,13 @@ function resetGame() {
   simulateClick(tabLinks[0]);
   roundEl.textContent = currentLevel.toString().padStart(2, '0');
   createLevels();
+  // Show the submit button and hide the next round button
+  submitButtons.forEach((button) => {
+    button.style.setProperty('display', 'block');
+  });
+  nextRoundButtons.forEach((button) => {
+    button.style.setProperty('display', 'none');
+  });
 }
 
 function gameOver() {
@@ -182,10 +191,15 @@ function gameOver() {
   if (!gameEl || !endEl || !endTextEl) {
     throw new Error('Game and end elements are required');
   }
+
+  const socialContentEl = document.querySelector('[data-game="social-content"]');
   const timeDisplay = formatHumanReadableTime(stopwatch.getTime());
-  //const finalScore = score.getScore();
+  const message = `I beat the Eyeballing Game in ${timeDisplay}! Can you beat my time? Give it a try!`;
 
   endTextEl.textContent = `Congratulations! You finished the game in ${timeDisplay}.`;
+  if (socialContentEl) {
+    socialContentEl.setAttribute('fs-social-share', message);
+  }
 
   gameEl.style.setProperty('display', 'none');
   endEl.style.setProperty('display', 'block');
@@ -297,13 +311,23 @@ function handleNextRoundButtonClicked() {
 }
 
 // HELPERS
+// function hideSubmitShowNext() {
+//   submitButtons.forEach((button) => {
+//     button.style.setProperty('display', 'none');
+//   });
+//   nextRoundButtons.forEach((button) => {
+//     button.style.setProperty('display', 'block');
+//   });
+// }
+
 function hideSubmitShowNext() {
   submitButtons.forEach((button) => {
     button.style.setProperty('display', 'none');
   });
-  nextRoundButtons.forEach((button) => {
-    button.style.setProperty('display', 'block');
-  });
+
+  setTimeout(() => {
+    handleNextRoundButtonClicked(); // Trigger the next round after 1 second
+  }, 1000);
 }
 
 function hideNextShowSubmit() {

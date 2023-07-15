@@ -45,6 +45,11 @@ export const LEVEL_PROPERTIES: Record<number, LEVEL_PROPERTY> = {
     min: 0,
     max: 360,
   },
+  8: {
+    cssProperty: 'padding',
+    min: 0,
+    max: 50,
+  },
 };
 
 // export const LEVEL_PROPERTIES: Record<number, string> = {

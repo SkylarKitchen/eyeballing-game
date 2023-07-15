@@ -62,15 +62,18 @@ export class Level {
   }
 
   updateGameUI(): void {
-    // update the element that displays user selection
-    this.displayUserSelectionElement.textContent = `${this.userSelection}`;
+    // Update the element that displays user selection if it exists
+    if (this.displayUserSelectionElement) {
+      this.displayUserSelectionElement.textContent = `${this.userSelection}`;
+    }
 
-    this.targetEl.style.setProperty(
-      this.targetElProperty,
-      this.formatPropertyValueToStringForLevel(this.levelNumber, this.userSelection)
-    );
-
-    //(`update target ${this.targetElProperty} to ${this.userSelection}`);
+    // Update the target element if it exists
+    if (this.targetEl) {
+      this.targetEl.style.setProperty(
+        this.targetElProperty,
+        this.formatPropertyValueToStringForLevel(this.levelNumber, this.userSelection)
+      );
+    }
   }
 
   checkAnswer(): boolean {
@@ -154,6 +157,10 @@ export class Level {
       splitString[5] = `${offsetY}px`;
       const newBoxShadowString = splitString.join(' ');
       return newBoxShadowString;
+    }
+    if (level === 8) {
+      // padding
+      return `${value}px`;
     }
     return '';
   }
