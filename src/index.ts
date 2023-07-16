@@ -145,11 +145,11 @@ function handleStartGameButtonClicked() {
     throw new Error('Countdown element is required');
   }
   introEl.style.setProperty('display', 'none');
-  gameEl.style.setProperty('display', 'block');
+  gameEl.style.setProperty('display', 'flex');
+  gameEl.style.setProperty('align-items', 'center');
 
   createLevels();
   // start playing first level
-  stopwatch.start();
   levels[currentLevel - 1].play();
 
   const countdown = setInterval(() => {
@@ -202,7 +202,8 @@ function gameOver() {
   }
 
   gameEl.style.setProperty('display', 'none');
-  endEl.style.setProperty('display', 'block');
+  endEl.style.setProperty('display', 'flex');
+  endEl.style.setProperty('align-items', 'center');
   fetch('https://hooks.zapier.com/hooks/catch/14554026/3my5lpi/', {
     method: 'POST',
     body: JSON.stringify({
@@ -223,6 +224,10 @@ function handleAnswer(isCorrect: boolean) {
     messageEl.classList.add(CLASSNAMES.SUCCESS);
     messageEl.textContent = 'Congratulations! You nailed it';
     hideSubmitShowNext();
+
+    setTimeout(() => {
+      glowTopEmbed.classList.remove(CLASSNAMES.SUCCESS); // Remove SUCCESS class after 0.5 seconds
+    }, 800);
   } else {
     // time penalty
     let penaltyTime = (PENALTY_DURATION - 1) / 1000;
@@ -278,7 +283,8 @@ nextRoundButtons.forEach((button) => {
 tryAgainButton.addEventListener('click', () => {
   resetGame();
   endEl.style.setProperty('display', 'none');
-  introEl.style.setProperty('display', 'block');
+  introEl.style.setProperty('display', 'flex');
+  introEl.style.setProperty('align-items', 'center');
 });
 
 // HANDLERS
@@ -303,7 +309,10 @@ function handleNextRoundButtonClicked() {
     roundEl.textContent = currentLevel.toString().padStart(2, '0');
     simulateClick(tabLinks[currentLevel]);
     levels[currentLevel - 1].play();
-    hideNextShowSubmit();
+
+    setTimeout(() => {
+      hideNextShowSubmit();
+    }, 200);
   } else {
     // last level completed
     gameOver();

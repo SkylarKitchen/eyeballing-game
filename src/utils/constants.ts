@@ -62,7 +62,7 @@ export const LEVEL_PROPERTIES: Record<number, LEVEL_PROPERTY> = {
 //   7: 'box-shadow',
 // };
 
-export const PERFECT_PERCENT = 10;
+export const PERFECT_PERCENT = 4;
 export const GOOD_PERCENT = 20;
 
 export const POINTS_FOR_PERFECT = 2;

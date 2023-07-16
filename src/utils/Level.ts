@@ -131,12 +131,14 @@ export class Level {
     if (level === 6) {
       // box shadow
       const boxShadowString = getComputedStyle(this.referenceEl).boxShadow;
+      console.log('Box Shadow String:', boxShadowString);
       const splitString = boxShadowString.split(' ');
-      // Update the value at the position of the vertical offset in the shadow (4th value, index 3)
-      splitString[4] = `${value}px`;
+      // Update the value at the position of the blur radius in the shadow (5rd value, index 4)
+      splitString[5] = `${value}px`;
       const newBoxShadowString = splitString.join(' ');
       return newBoxShadowString;
     }
+
     if (level === 7) {
       // get reference box shadow value
       const boxShadowString = getComputedStyle(this.referenceEl).boxShadow;

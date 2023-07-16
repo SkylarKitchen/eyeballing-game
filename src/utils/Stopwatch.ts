@@ -26,10 +26,23 @@ export class Stopwatch {
   }
 
   start() {
-    this.countup = setInterval(() => {
-      this.timeElapsed += 1;
-      this.timeElement.textContent = formatTime(this.timeElapsed); // update timer display
-    }, 1000); // count up every second
+    const startTime = performance.now();
+    let previousTime = startTime;
+
+    const update = () => {
+      const currentTime = performance.now();
+      const elapsed = (currentTime - startTime) / 1000; // convert to seconds
+      this.timeElapsed = this.startTime + elapsed;
+
+      if (this.timeElement) {
+        this.timeElement.textContent = formatTime(this.timeElapsed); // update timer display
+      }
+
+      previousTime = currentTime;
+      this.countup = requestAnimationFrame(update);
+    };
+
+    this.countup = requestAnimationFrame(update);
   }
 
   stop() {
@@ -42,8 +55,9 @@ export class Stopwatch {
     this.timeElement.textContent = formatTime(this.timeElapsed); // update timer display
   }
 
-  getTime() {
-    return this.timeElapsed; // get the elapsed time
+  getTime(): number {
+    const secondsAccurate = this.timeElapsed + (performance.now() % 1000) / 1000;
+    return Number(secondsAccurate.toFixed(2));
   }
 
   getAccurateTime() {
