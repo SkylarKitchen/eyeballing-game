@@ -145,8 +145,7 @@ function handleStartGameButtonClicked() {
     throw new Error('Countdown element is required');
   }
   introEl.style.setProperty('display', 'none');
-  gameEl.style.setProperty('display', 'flex');
-  gameEl.style.setProperty('align-items', 'center');
+  gameEl.style.setProperty('display', 'block');
 
   createLevels();
   // start playing first level
@@ -188,6 +187,7 @@ function resetGame() {
 
 function gameOver() {
   stopwatch.stop();
+  stopwatch.reset(); // Reset the timer
   if (!gameEl || !endEl || !endTextEl) {
     throw new Error('Game and end elements are required');
   }
@@ -202,8 +202,7 @@ function gameOver() {
   }
 
   gameEl.style.setProperty('display', 'none');
-  endEl.style.setProperty('display', 'flex');
-  endEl.style.setProperty('align-items', 'center');
+  endEl.style.setProperty('display', 'block');
   fetch('https://hooks.zapier.com/hooks/catch/14554026/3my5lpi/', {
     method: 'POST',
     body: JSON.stringify({
@@ -283,8 +282,7 @@ nextRoundButtons.forEach((button) => {
 tryAgainButton.addEventListener('click', () => {
   resetGame();
   endEl.style.setProperty('display', 'none');
-  introEl.style.setProperty('display', 'flex');
-  introEl.style.setProperty('align-items', 'center');
+  introEl.style.setProperty('display', 'block');
 });
 
 // HANDLERS
