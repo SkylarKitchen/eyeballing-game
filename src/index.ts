@@ -187,7 +187,7 @@ function resetGame() {
 
 function gameOver() {
   stopwatch.stop();
-  stopwatch.reset(); // Reset the timer
+
   if (!gameEl || !endEl || !endTextEl) {
     throw new Error('Game and end elements are required');
   }
@@ -214,6 +214,8 @@ function gameOver() {
     .then((response) => response.json())
     .then((data) => console.log('Success:', data))
     .catch((error) => console.error('Error:', error));
+
+  stopwatch.reset(); // Reset the timer
 }
 
 function handleAnswer(isCorrect: boolean) {
