@@ -170,7 +170,6 @@ function resetGame() {
     throw new Error('Error resetting the game');
   }
   countdownEl.textContent = '3';
-  score.reset();
   stopwatch.reset();
   currentLevel = 1;
   simulateClick(tabLinks[0]);

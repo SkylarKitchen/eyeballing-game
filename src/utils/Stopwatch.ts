@@ -46,11 +46,12 @@ export class Stopwatch {
   }
 
   stop() {
-    clearInterval(this.countup); // stop the countup
+    cancelAnimationFrame(this.countup); // stop the countup
   }
 
   reset() {
     this.stop();
+    this.startTime = 0; // reset the initial start time to 0
     this.timeElapsed = this.startTime; // reset time elapsed to the initial start time
     this.timeElement.textContent = formatTime(this.timeElapsed); // update timer display
   }
