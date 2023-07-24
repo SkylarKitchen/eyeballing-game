@@ -94,8 +94,8 @@ export class Level {
       percentageDifference = (difference / range) * 100;
     }
 
-    console.log(`target: ${this.targetValue} user: ${this.userSelection}`);
-    console.log(`difference: ${difference} percentage: ${percentageDifference}`);
+    // console.log(`target: ${this.targetValue} user: ${this.userSelection}`);
+    // console.log(`difference: ${difference} percentage: ${percentageDifference}`);
 
     if (percentageDifference <= PERFECT_PERCENT) {
       return true;

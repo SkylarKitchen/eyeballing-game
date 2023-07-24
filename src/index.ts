@@ -266,11 +266,11 @@ startGameButton.addEventListener('click', () => {
   handleStartGameButtonClicked();
 });
 
-document.addEventListener('keydown', (event) => {
-  if (event.key === 'q') {
-    gameOver();
-  }
-});
+// document.addEventListener('keydown', (event) => {
+//   if (event.key === 'q') {
+//     gameOver();
+//   }
+// });
 
 submitButtons.forEach((button) => {
   button.addEventListener('click', handleSubmitButtonClicked);
